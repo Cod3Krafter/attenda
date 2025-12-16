@@ -1,6 +1,7 @@
 export class Organizer {
     constructor(
         readonly id: string,
+        readonly authUserId: string, // Supabase Auth user ID
         public email: string,
         public name: string,
         public role: 'owner' | 'admin' | 'staff' = 'staff',
@@ -12,6 +13,9 @@ export class Organizer {
     }
 
     private validateOrganizer() {
+        if (!this.authUserId || this.authUserId.trim().length === 0) {
+            throw new Error('Auth user ID is required');
+        }
         if (!this.name || this.name.trim().length === 0) {
             throw new Error('Organizer name is required');
         }

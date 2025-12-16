@@ -1,4 +1,4 @@
-import { Guest } from '../../core/entities/guests/guests';
+import { Guest } from '../../core/entities/guest/guest';
 import { IGuestRepository } from '../../core/repositories/IGuestRepository';
 
 export class InMemoryGuestRepository implements IGuestRepository {
