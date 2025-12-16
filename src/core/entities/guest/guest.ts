@@ -54,13 +54,14 @@ export class Guest{
     }
 
     checkOut(){
+        // Must not be already checked out
+        if (this.checkedOut) throw new Error ("Guest already checked out")
+
         // Must be checked in
         if(!this.checkedIn) throw new Error ("Guest not checked in yet")
-        
-        // Must not be alreadt checked out
-        if (this.checkedOut) throw new Error ("Guest already checked out")
-            
+
         this.checkedIn = false;
+        this.checkedOut = true;
         this.checkedOutAt = new Date();
     }
 

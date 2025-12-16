@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Attenda - Event Guest Management System
 
-## Getting Started
+A modern event management application built with Clean Architecture principles, Next.js, and Supabase.
 
-First, run the development server:
+## 🚀 Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Event Management** - Create and manage events with multiple gates
+- **Guest Lists** - Upload and manage guest lists with QR codes
+- **RSVP System** - Allow guests to RSVP online
+- **Check-in System** - QR code-based guest check-ins
+- **Multi-Gate Support** - Support multiple entry points per event
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🔒 Security & Git
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### ✅ Safe to Commit
+- Source code, tests, documentation
+- Schema files (supabase/schema.sql)
+- Example env file (.env.local.example)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### ❌ Never Commit
+- .env.local (Contains Supabase credentials!)
+- .env files with real secrets
+- .supabase/ directory
 
-## Learn More
+The .gitignore is already configured to protect these files.
 
-To learn more about Next.js, take a look at the following resources:
+## 📚 Setup
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+See [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) for complete setup instructions.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🧪 Testing
 
-## Deploy on Vercel
+\`\`\`bash
+pnpm test              # Run all tests (39 passing ✅)
+pnpm test:supabase     # Test Supabase connection
+\`\`\`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🚧 Status
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+✅ Entities & Use Cases | ✅ Supabase Auth | ✅ Tests | 🚧 Repositories | 📋 API | 📋 UI

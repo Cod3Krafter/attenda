@@ -1,4 +1,4 @@
-import { Guest } from '../entities/guests/guests';
+import { Guest } from '../entities/guest/guest';
 
 export interface IGuestRepository {
     findById(id: string): Promise<Guest | null>;

@@ -1,4 +1,4 @@
-import { Event } from '../../core/entities/events/events';
+import { Event } from '../../core/entities/event/event';
 import { IEventRepository } from '../../core/repositories/IEventRepository';
 
 export class InMemoryEventRepository implements IEventRepository {
