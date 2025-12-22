@@ -1,3 +1,5 @@
+import { sanitizeText, sanitizeHtml, isValidLength } from '../../../lib/sanitize';
+
 export class Event {
     constructor(
         readonly id : string,
@@ -13,11 +15,19 @@ export class Event {
         public updatedAt?: Date
     )
     {
+        // Sanitize inputs
+        this.title = sanitizeText(title);
+        this.description = description ? sanitizeHtml(description) : null;
+        this.venue = sanitizeText(venue);
+
         this.validateEvent()
     }
 
     private validateEvent() {
-        if (!this.title || this.title.trim().length === 0) throw new Error('Event Title Required')
+        if (!this.title || this.title.trim().length === 0) throw new Error('Event Title Required');
+        if (!isValidLength(this.title, 1, 200)) throw new Error('Event title must be between 1 and 200 characters');
+        if (this.description && !isValidLength(this.description, 0, 5000)) throw new Error('Event description must be less than 5000 characters');
+        if (!isValidLength(this.venue, 1, 300)) throw new Error('Event venue must be between 1 and 300 characters');
     }
 
       publishEvent() {

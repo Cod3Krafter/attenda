@@ -114,11 +114,14 @@ describe('Event Entity', () => {
                 'Event',
                 'Description',
                 'organizer-1',
-                '',
+                'Test Venue',
                 endDate,
                 startDate,
                 'draft'
             );
+
+            // Clear venue after construction to test publish validation
+            event.venue = '';
 
             expect(() => {
                 event.publishEvent();

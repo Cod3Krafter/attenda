@@ -3,6 +3,8 @@
 // Check in
 // Check out
 
+import { sanitizeText, sanitizeEmail, sanitizePhone, isValidPhone } from '../../../lib/sanitize';
+
 export class Guest{
     constructor(
         readonly id: string,
@@ -20,8 +22,13 @@ export class Guest{
         public createdAt: Date = new Date(),
         public updatedAt?: Date
     ) {
+        // Sanitize inputs before validation
+        this.name = sanitizeText(name);
+        this.email = sanitizeEmail(email);
+        this.phone = sanitizePhone(phone);
+        if (qrCode) this.qrCode = sanitizeText(qrCode);
 
-        // validate the nely created user
+        // validate the newly created user
         this.validate()
     }
 
@@ -32,6 +39,9 @@ export class Guest{
         }
         if (!this.isValidEmail(this.email)) {
             throw new Error('Invalid email format');
+        }
+        if (!isValidPhone(this.phone)) {
+            throw new Error('Invalid phone number format');
         }
     }
 

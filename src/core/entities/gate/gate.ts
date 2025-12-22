@@ -1,4 +1,6 @@
-import {AccessCodeGenerator} from "./gateAccessCodeGenerator" 
+import {AccessCodeGenerator} from "./gateAccessCodeGenerator";
+import { sanitizeText, isValidLength } from '../../../lib/sanitize';
+
 export class Gate {
     constructor(
         readonly id: string,
@@ -9,6 +11,10 @@ export class Gate {
         public createdAt: Date = new Date(),
         public updatedAt?: Date
     ) {
+        // Sanitize inputs
+        this.name = sanitizeText(name);
+        this.accessCode = sanitizeText(accessCode);
+
         this.validateGate();
     }
 
@@ -16,8 +22,14 @@ export class Gate {
         if (!this.name || this.name.trim().length === 0) {
             throw new Error('Gate name is required');
         }
+        if (!isValidLength(this.name, 1, 100)) {
+            throw new Error('Gate name must be between 1 and 100 characters');
+        }
         if (!this.accessCode || this.accessCode.trim().length === 0) {
             throw new Error('Access code is required');
+        }
+        if (!isValidLength(this.accessCode, 4, 20)) {
+            throw new Error('Access code must be between 4 and 20 characters');
         }
     }
 
@@ -40,6 +52,14 @@ export class Gate {
         this.updatedAt = new Date();
 
         return newCode;
+    }
+
+    setAccessCode(code: string) {
+        if (!code || code.trim().length === 0) {
+            throw new Error('Access code cannot be empty');
+        }
+        this.accessCode = code;
+        this.updatedAt = new Date();
     }
 
     updateDetails(details: { name?: string; accessCode?: string }) {

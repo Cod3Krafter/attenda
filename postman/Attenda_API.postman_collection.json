@@ -1,0 +1,751 @@
+{
+  "info": {
+    "name": "Attenda API",
+    "description": "Complete API collection for Attenda event management system",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Sign Up",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('accessToken', response.data.session.access_token);",
+                  "    pm.environment.set('organizerId', response.data.organizer.id);",
+                  "    pm.environment.set('authUserId', response.data.user.id);",
+                  "    console.log('✅ Signup successful! Token and IDs saved.');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"organizer@example.com\",\n  \"password\": \"SecurePass123\",\n  \"name\": \"John Doe\",\n  \"role\": \"owner\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/signup",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "signup"]
+            },
+            "description": "Create a new organizer account. Automatically saves access token and organizer ID."
+          }
+        },
+        {
+          "name": "Sign In",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('accessToken', response.data.session.access_token);",
+                  "    pm.environment.set('organizerId', response.data.organizer.id);",
+                  "    console.log('✅ Login successful! Token saved.');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"organizer@example.com\",\n  \"password\": \"SecurePass123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/signin",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "signin"]
+            },
+            "description": "Sign in to existing account"
+          }
+        },
+        {
+          "name": "Get Session",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/session",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "session"]
+            },
+            "description": "Get current session info"
+          }
+        },
+        {
+          "name": "Sign Out",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/signout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "signout"]
+            },
+            "description": "Sign out current user"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Events",
+      "item": [
+        {
+          "name": "Create Event",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('eventId', response.data.id);",
+                  "    console.log('✅ Event created! ID:', response.data.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"organizerId\": \"{{organizerId}}\",\n  \"title\": \"Tech Conference 2025\",\n  \"description\": \"Annual technology conference\",\n  \"venue\": \"Convention Center\",\n  \"startDate\": \"2025-06-01T09:00:00Z\",\n  \"endDate\": \"2025-06-03T18:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/events",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events"]
+            },
+            "description": "Create a new event. Automatically saves event ID."
+          }
+        },
+        {
+          "name": "Get Event",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/events/{{eventId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "{{eventId}}"]
+            },
+            "description": "Get event by ID"
+          }
+        },
+        {
+          "name": "List Events",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/events?organizerId={{organizerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events"],
+              "query": [
+                {
+                  "key": "organizerId",
+                  "value": "{{organizerId}}"
+                }
+              ]
+            },
+            "description": "List all events for an organizer"
+          }
+        },
+        {
+          "name": "Update Event",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Tech Conference 2025\",\n  \"description\": \"Updated description\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/events/{{eventId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "{{eventId}}"]
+            },
+            "description": "Update event details"
+          }
+        },
+        {
+          "name": "Publish Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/events/{{eventId}}/publish",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "{{eventId}}", "publish"]
+            },
+            "description": "Publish an event"
+          }
+        },
+        {
+          "name": "Cancel Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Venue unavailable\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/events/{{eventId}}/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "{{eventId}}", "cancel"]
+            },
+            "description": "Cancel an event"
+          }
+        },
+        {
+          "name": "Delete Event",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/events/{{eventId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "{{eventId}}"]
+            },
+            "description": "Delete an event"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Guests",
+      "item": [
+        {
+          "name": "Add Guest to Event",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('guestId', response.data.id);",
+                  "    console.log('✅ Guest added! ID:', response.data.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Smith\",\n  \"email\": \"jane@example.com\",\n  \"phone\": \"+1234567890\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/events/{{eventId}}/guests",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "{{eventId}}", "guests"]
+            },
+            "description": "Add a guest to an event. Auto-saves guest ID."
+          }
+        },
+        {
+          "name": "List Event Guests",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/events/{{eventId}}/guests",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "{{eventId}}", "guests"]
+            },
+            "description": "Get all guests for an event"
+          }
+        },
+        {
+          "name": "Get Guest",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/guests/{{guestId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "guests", "{{guestId}}"]
+            },
+            "description": "Get guest by ID"
+          }
+        },
+        {
+          "name": "Update Guest",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Doe\",\n  \"phone\": \"+1987654321\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/guests/{{guestId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "guests", "{{guestId}}"]
+            },
+            "description": "Update guest details"
+          }
+        },
+        {
+          "name": "Update RSVP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"yes\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/guests/{{guestId}}/rsvp",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "guests", "{{guestId}}", "rsvp"]
+            },
+            "description": "Update guest RSVP status (yes/no)"
+          }
+        },
+        {
+          "name": "Check In Guest",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/guests/{{guestId}}/checkin",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "guests", "{{guestId}}", "checkin"]
+            },
+            "description": "Manually check in a guest"
+          }
+        },
+        {
+          "name": "Check Out Guest",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/guests/{{guestId}}/checkout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "guests", "{{guestId}}", "checkout"]
+            },
+            "description": "Check out a guest"
+          }
+        },
+        {
+          "name": "Delete Guest",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/guests/{{guestId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "guests", "{{guestId}}"]
+            },
+            "description": "Delete a guest"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gates",
+      "item": [
+        {
+          "name": "Create Gate (Auto-Generate Code)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('gateId', response.data.id);",
+                  "    pm.environment.set('accessCode', response.data.accessCode);",
+                  "    console.log('✅ Gate created! Code:', response.data.accessCode);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Main Entrance\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/events/{{eventId}}/gates",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "{{eventId}}", "gates"]
+            },
+            "description": "Create gate with auto-generated access code"
+          }
+        },
+        {
+          "name": "Create Gate (Custom Code)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"VIP Entrance\",\n  \"accessCode\": \"VIP2025\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/events/{{eventId}}/gates",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "{{eventId}}", "gates"]
+            },
+            "description": "Create gate with custom access code"
+          }
+        },
+        {
+          "name": "List Event Gates",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/events/{{eventId}}/gates",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "{{eventId}}", "gates"]
+            },
+            "description": "Get all gates for an event"
+          }
+        },
+        {
+          "name": "Get Gate",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/gates/{{gateId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "gates", "{{gateId}}"]
+            },
+            "description": "Get gate by ID"
+          }
+        },
+        {
+          "name": "Update Gate",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Gate Name\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/gates/{{gateId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "gates", "{{gateId}}"]
+            },
+            "description": "Update gate details"
+          }
+        },
+        {
+          "name": "Regenerate Access Code",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('accessCode', response.data.accessCode);",
+                  "    console.log('✅ Access code regenerated:', response.data.accessCode);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/gates/{{gateId}}/regenerate-code",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "gates", "{{gateId}}", "regenerate-code"]
+            },
+            "description": "Generate new access code for gate"
+          }
+        },
+        {
+          "name": "🔓 Gate Authentication (Public)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('gateSessionToken', response.data.gateSessionToken);",
+                  "    console.log('✅ Gate authenticated! Token expires at:', response.data.expiresAt);",
+                  "    console.log('📍 Gate:', response.data.gate.name);",
+                  "    console.log('⏱️  Token valid for:', response.data.expiresIn, 'seconds (4 hours)');",
+                  "    console.log('🔓 No organizer account needed - anonymous operator!');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gateId\": \"{{gateId}}\",\n  \"accessCode\": \"{{accessCode}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/gates/auth",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "gates", "auth"]
+            },
+            "description": "🔓 PUBLIC GATE AUTHENTICATION\n\n**No organizer account needed!** Anyone with the gate link and access code can authenticate.\n\n**🎯 Use Case:**\n1. Organizer shares gate link: /gate/[gateId]\n2. Organizer shares access code (e.g., \"A3X9K2\")\n3. Gate operator (anyone) opens link, enters code\n4. Receives 4-hour session token\n5. Can now scan guests on that device\n\n**✅ Validates:**\n- Gate exists\n- Access code is correct\n- Gate is active\n\n**⚙️ Features:**\n- 🔓 No authentication required\n- ⏱️  4-hour token expiry (non-refreshable)\n- 🚪 One session per gate (new auth invalidates previous)\n- 👤 Anonymous operators (no tracking)\n- 🔒 Token cannot be spoofed (gateId/eventId in JWT)\n\n**📤 Returns:**\n- gateSessionToken: Use for all scan operations\n- expiresAt: Token expiration timestamp\n- expiresIn: 14400 seconds (4 hours)\n- gate: Gate information (id, name, eventId)\n\n**⚠️ Important:**\nYou MUST authenticate via this endpoint before scanning. The scan endpoint requires a valid gateSessionToken.\n\n**Next Step:**\nUse the gateSessionToken in the 'Scan Guest' request Authorization header."
+          }
+        },
+        {
+          "name": "Activate Gate",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/gates/{{gateId}}/activate",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "gates", "{{gateId}}", "activate"]
+            },
+            "description": "Activate a gate"
+          }
+        },
+        {
+          "name": "Deactivate Gate",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/gates/{{gateId}}/deactivate",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "gates", "{{gateId}}", "deactivate"]
+            },
+            "description": "Deactivate a gate"
+          }
+        },
+        {
+          "name": "Delete Gate",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/gates/{{gateId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "gates", "{{gateId}}"]
+            },
+            "description": "Delete a gate"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Scanning",
+      "item": [
+        {
+          "name": "🎫 Scan Guest (Secure)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    console.log('✅ Scan successful!');",
+                  "    console.log('👤 Guest:', response.data.guest.name);",
+                  "    console.log('📍 Gate:', response.data.gate.name);",
+                  "    console.log('✓ Result:', response.data.scan.result);",
+                  "    console.log('⏰ Time:', response.data.scan.timestamp);",
+                  "    if (response.data.guest.checkedIn) {",
+                  "        console.log('✅ Guest checked in!');",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{gateSessionToken}}",
+                "description": "Gate session token from Gate Authentication endpoint"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"guestId\": \"{{guestId}}\",\n  \"scanData\": \"QR_CODE_DATA_123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/scan",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "scan"]
+            },
+            "description": "🎫 SECURE SCAN ENDPOINT\n\nRecords a guest scan at a gate with token-based security.\n\n**⚠️ BREAKING CHANGE:**\nThis endpoint now requires gate authentication. You MUST authenticate via POST /api/gates/auth first.\n\n**Security Requirements:**\n- Valid gate session token (from Gate Authentication)\n- Token must not be expired (4-hour TTL)\n- gateId and eventId are extracted from token (cannot be spoofed)\n\n**Request Body:**\n- guestId: ID of guest being scanned (required)\n- scanData: Optional QR code or scan data\n\n**⚠️ Note:**\n- gateId and eventId are NO LONGER in request body\n- They are securely extracted from the JWT token\n- This prevents spoofing and ensures scan integrity\n\n**Response:**\n- scan: Scan result (success/denied/invalid)\n- guest: Guest info (auto-checked in on success)\n- gate: Gate info\n\n**Prerequisites:**\n1. Sign in as organizer (get accessToken)\n2. Create/get gate (get gateId, accessCode)\n3. Authenticate gate (get gateSessionToken) ← REQUIRED\n4. Then you can scan guests\n\n**Token Expiry:**\nIf you get a 401 error, your gate session has expired. Re-authenticate via POST /api/gates/auth."
+          }
+        },
+        {
+          "name": "Get Event Scans",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/events/{{eventId}}/scans",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "{{eventId}}", "scans"]
+            },
+            "description": "Get all scans for an event"
+          }
+        },
+        {
+          "name": "Get Guest Scan History",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/guests/{{guestId}}/scans",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "guests", "{{guestId}}", "scans"]
+            },
+            "description": "Get scan history for a specific guest"
+          }
+        },
+        {
+          "name": "Get Gate Scan History",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/gates/{{gateId}}/scans",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "gates", "{{gateId}}", "scans"]
+            },
+            "description": "Get scan history for a specific gate"
+          }
+        }
+      ]
+    }
+  ]
+}

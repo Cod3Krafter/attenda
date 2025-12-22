@@ -14,6 +14,12 @@ export class InMemoryOrganizerRepository implements IOrganizerRepository {
         ) || null;
     }
 
+    async findByAuthUserId(authUserId: string): Promise<Organizer | null> {
+        return Array.from(this.organizers.values()).find(
+            organizer => organizer.authUserId === authUserId
+        ) || null;
+    }
+
     async findAll(): Promise<Organizer[]> {
         return Array.from(this.organizers.values());
     }

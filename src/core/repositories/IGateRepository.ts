@@ -1,4 +1,4 @@
-import { Gate } from '../entities/gate/gate';
+import { Gate } from '../entities/gate/Gate';
 
 export interface IGateRepository {
     findById(id: string): Promise<Gate | null>;

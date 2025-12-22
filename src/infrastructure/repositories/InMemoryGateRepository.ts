@@ -1,4 +1,4 @@
-import { Gate } from '../../core/entities/gate/gate';
+import { Gate } from '../../core/entities/gate/Gate';
 import { IGateRepository } from '../../core/repositories/IGateRepository';
 
 export class InMemoryGateRepository implements IGateRepository {

@@ -1,3 +1,5 @@
+import { sanitizeText, sanitizeEmail, isValidLength } from '../../../lib/sanitize';
+
 export class Organizer {
     constructor(
         readonly id: string,
@@ -9,6 +11,10 @@ export class Organizer {
         public createdAt: Date = new Date(),
         public updatedAt?: Date
     ) {
+        // Sanitize inputs
+        this.email = sanitizeEmail(email);
+        this.name = sanitizeText(name);
+
         this.validateOrganizer();
     }
 
@@ -18,6 +24,9 @@ export class Organizer {
         }
         if (!this.name || this.name.trim().length === 0) {
             throw new Error('Organizer name is required');
+        }
+        if (!isValidLength(this.name, 1, 100)) {
+            throw new Error('Organizer name must be between 1 and 100 characters');
         }
         if (!this.isValidEmail(this.email)) {
             throw new Error('Invalid email format');

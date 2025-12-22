@@ -4,7 +4,7 @@ import { IEventRepository } from '../../repositories/IEventRepository';
 import { IGateRepository } from '../../repositories/IGateRepository';
 import { IOrganizerRepository } from '../../repositories/IOrganizerRepository';
 import { Event } from '../../entities/event/event';
-import { Gate } from '../../entities/gate/gate';
+import { Gate } from '../../entities/gate/Gate';
 import { Organizer } from '../../entities/organizer/organizer';
 
 describe('CreateEventUseCase', () => {
