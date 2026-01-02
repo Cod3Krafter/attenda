@@ -19,7 +19,15 @@ export async function POST(request: NextRequest, { params }: Params) {
         }
 
         const { id } = await params;
-        const result = await gateController.regenerateAccessCode(id);
+
+        // Check for revoke sessions option (query parameter)
+        const { searchParams } = new URL(request.url);
+        const revokeExistingSessions = searchParams.get('revokeSessions') === 'true';
+
+        const result = await gateController.regenerateAccessCode(id, {
+            revokeExistingSessions
+        });
+
         return toNextResponse(result);
     } catch (error) {
         console.error('Regenerate access code error:', error);

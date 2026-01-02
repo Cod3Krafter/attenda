@@ -1,6 +1,7 @@
 import { Gate } from '../../core/entities/gate/Gate';
 import { IGateRepository } from '../../core/repositories/IGateRepository';
 import { IEventRepository } from '../../core/repositories/IEventRepository';
+import { IGateSessionRepository } from '../../core/repositories/IGateSessionRepository';
 import { AccessCodeGenerator, DefaultAccessCodeGenerator } from '../../core/entities/gate/gateAccessCodeGenerator';
 import { ControllerResponse, successResponse, errorResponse } from './types';
 
@@ -21,6 +22,7 @@ export class GateController {
     constructor(
         private gateRepository: IGateRepository,
         private eventRepository: IEventRepository,
+        private gateSessionRepository: IGateSessionRepository,
         accessCodeGenerator?: AccessCodeGenerator
     ) {
         this.accessCodeGenerator = accessCodeGenerator || new DefaultAccessCodeGenerator();
@@ -148,7 +150,10 @@ export class GateController {
         }
     }
 
-    async regenerateAccessCode(id: string): Promise<ControllerResponse<Gate>> {
+    async regenerateAccessCode(
+        id: string,
+        options?: { revokeExistingSessions?: boolean }
+    ): Promise<ControllerResponse<Gate>> {
         try {
             const gate = await this.gateRepository.findById(id);
 
@@ -170,6 +175,11 @@ export class GateController {
 
             if (attempts >= maxAttempts) {
                 return errorResponse('Failed to generate unique access code', 'CODE_GENERATION_FAILED');
+            }
+
+            // Revoke existing sessions if requested (security feature)
+            if (options?.revokeExistingSessions) {
+                await this.gateSessionRepository.deleteByGateId(id);
             }
 
             // Use the verified unique code

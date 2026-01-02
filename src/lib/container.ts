@@ -45,7 +45,8 @@ export const guestController = new GuestController(
 
 export const gateController = new GateController(
     gateRepository,
-    eventRepository
+    eventRepository,
+    gateSessionRepository
 );
 
 export const scanController = new ScanController(
